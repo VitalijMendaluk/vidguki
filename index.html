@@ -1,0 +1,322 @@
+<!DOCTYPE html>
+<html lang="uk">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Кейси учнів — результати</title>
+
+<!-- ============================================================= -->
+<!--  ЯК ДОДАТИ НОВИЙ ВІДГУК:                                       -->
+<!--  1. Покладіть відеофайл у цю ж папку.                          -->
+<!--  2. Нижче, у списку CASES, додайте новий блок { ... }          -->
+<!--     (можна скопіювати будь-який існуючий і змінити текст).     -->
+<!--     file  — назва відеофайлу точно як у папці                  -->
+<!--     name  — ім'я учня                                          -->
+<!--     tag   — короткий підпис (ніша/сфера), можна лишити "")     -->
+<!--     pointA — звідки почали (точка А)                           -->
+<!--     pointB — до чого прийшли (точка Б)                         -->
+<!--  3. Збережіть файл і оновіть сторінку (Cmd+R).                 -->
+<!-- ============================================================= -->
+
+<style>
+  :root{
+    --bg:#0d0d12;
+    --bg-soft:#15151d;
+    --card:#1a1a24;
+    --line:#2a2a38;
+    --text:#f4f4f8;
+    --muted:#9a9aae;
+    --a:#fe2c55;      /* TikTok red   */
+    --b:#25f4ee;      /* TikTok cyan  */
+    --radius:22px;
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  html{scroll-behavior:smooth}
+  body{
+    font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;
+    background:
+      radial-gradient(900px 500px at 85% -10%, rgba(254,44,85,.16), transparent 60%),
+      radial-gradient(900px 500px at 10% 8%, rgba(37,244,238,.12), transparent 60%),
+      var(--bg);
+    color:var(--text);
+    line-height:1.55;
+    -webkit-font-smoothing:antialiased;
+    -webkit-text-size-adjust:100%;
+    overflow-x:hidden;
+  }
+  img,video{max-width:100%}
+
+  /* ---------- HEADER ---------- */
+  header{
+    max-width:1100px;margin:0 auto;
+    padding:64px 24px 28px;text-align:center;
+  }
+  .eyebrow{
+    display:inline-block;
+    font-size:13px;font-weight:700;letter-spacing:.14em;text-transform:uppercase;
+    color:var(--b);
+    background:rgba(37,244,238,.08);
+    border:1px solid rgba(37,244,238,.25);
+    padding:7px 16px;border-radius:999px;margin-bottom:22px;
+  }
+  header h1{
+    font-size:clamp(30px,5vw,52px);
+    font-weight:800;letter-spacing:-.02em;line-height:1.1;
+  }
+  header h1 .grad{
+    background:linear-gradient(90deg,var(--a),var(--b));
+    -webkit-background-clip:text;background-clip:text;color:transparent;
+  }
+  header p{
+    max-width:620px;margin:18px auto 0;
+    color:var(--muted);font-size:clamp(15px,2vw,18px);
+  }
+
+  /* ---------- CASES ---------- */
+  main{max-width:1100px;margin:0 auto;padding:30px 24px 90px}
+  .case{
+    display:grid;
+    grid-template-columns:minmax(260px,360px) 1fr;
+    gap:40px;align-items:center;
+    background:linear-gradient(180deg,var(--card),var(--bg-soft));
+    border:1px solid var(--line);
+    border-radius:var(--radius);
+    padding:32px;
+    margin-bottom:34px;
+  }
+  .case:nth-child(even){grid-template-columns:1fr minmax(260px,360px)}
+  .case:nth-child(even) .media{order:2}
+
+  /* широкоформатні (landscape) відео отримують ширшу колонку */
+  .case.landscape{grid-template-columns:minmax(320px,580px) 1fr}
+  .case.landscape:nth-child(even){grid-template-columns:1fr minmax(320px,580px)}
+  .case.landscape .media{max-width:580px}
+
+  /* video frame */
+  .media{
+    position:relative;justify-self:center;width:100%;max-width:330px;
+  }
+  .media video{
+    width:100%;aspect-ratio:9/16;   /* запасне значення до завантаження метаданих */
+    background:#000;border-radius:18px;display:block;
+    border:1px solid var(--line);
+    box-shadow:0 24px 60px rgba(0,0,0,.5);
+    object-fit:contain;
+  }
+  .badge-num{
+    position:absolute;top:-14px;left:-14px;z-index:2;
+    width:46px;height:46px;border-radius:14px;
+    display:grid;place-items:center;
+    font-weight:800;font-size:19px;color:#fff;
+    background:linear-gradient(135deg,var(--a),#c4123c);
+    box-shadow:0 8px 22px rgba(254,44,85,.45);
+  }
+
+  /* text side */
+  .info h2{font-size:clamp(22px,3vw,30px);font-weight:800;letter-spacing:-.01em}
+  .info .tag{
+    display:inline-block;margin:8px 0 20px;
+    font-size:14px;font-weight:600;color:var(--muted);
+    border-left:3px solid var(--a);padding-left:10px;
+  }
+  .ab{display:flex;flex-direction:column;gap:14px}
+  .ab .row{
+    display:flex;gap:14px;align-items:flex-start;
+    background:rgba(255,255,255,.025);
+    border:1px solid var(--line);
+    border-radius:14px;padding:14px 16px;
+  }
+  .pt{
+    flex:0 0 auto;min-width:74px;text-align:center;
+    font-weight:800;font-size:13px;letter-spacing:.06em;
+    padding:6px 0;border-radius:9px;
+  }
+  .pt.a{color:var(--a);background:rgba(254,44,85,.10);border:1px solid rgba(254,44,85,.3)}
+  .pt.b{color:var(--b);background:rgba(37,244,238,.10);border:1px solid rgba(37,244,238,.3)}
+  .ab .txt{font-size:15.5px;color:#e3e3ee}
+  .ab .txt b{color:#fff}
+
+  footer{
+    text-align:center;color:var(--muted);
+    font-size:14px;padding:0 24px 50px;
+  }
+
+  /* ---------- RESPONSIVE ---------- */
+
+  /* планшети / вузькі екрани: все в одну колонку */
+  @media (max-width:900px){
+    .case,
+    .case:nth-child(even),
+    .case.landscape,
+    .case.landscape:nth-child(even){
+      grid-template-columns:1fr;
+    }
+    .case .media,
+    .case:nth-child(even) .media{order:0}
+    .case{padding:22px;gap:22px;margin-bottom:24px}
+
+    /* горизонтальні відео — на всю ширину картки,
+       вертикальні — обмежені по висоті екрана, щоб влазили цілком */
+    .media{max-width:330px}
+    .case.landscape .media{max-width:100%}
+    .case.portrait  .media{max-width:min(330px, calc(74vh * 0.5625))}
+  }
+
+  /* телефони */
+  @media (max-width:560px){
+    header{padding:40px 16px 16px}
+    .eyebrow{font-size:11px;letter-spacing:.1em;padding:6px 12px;margin-bottom:16px}
+    header h1{font-size:26px}
+    header p{font-size:15px;margin-top:14px}
+
+    main{padding:14px 16px 56px}
+    .case{padding:16px;border-radius:18px;gap:18px;margin-bottom:18px}
+
+    .media{max-width:100%}
+    .case.portrait .media{max-width:min(100%, calc(68vh * 0.5625))}
+    .media video{border-radius:14px;box-shadow:0 12px 30px rgba(0,0,0,.45)}
+    .badge-num{
+      top:-10px;left:-10px;
+      width:38px;height:38px;border-radius:12px;font-size:16px;
+    }
+
+    .info h2{font-size:24px}
+    .info .tag{margin:6px 0 16px;font-size:13px;line-height:1.4}
+
+    /* Точка А / Точка Б — мітка над текстом, щоб текст не тиснувся у вузьку колонку */
+    .ab{gap:12px}
+    .ab .row{flex-direction:column;gap:8px;padding:13px 14px;border-radius:12px}
+    .pt{min-width:0;align-self:flex-start;padding:5px 12px;font-size:12px}
+    .ab .txt{font-size:15px}
+
+    footer{font-size:13px;padding:0 16px 40px}
+  }
+</style>
+</head>
+<body>
+
+<header>
+  <span class="eyebrow">Реальні результати учнів</span>
+  <h1>Кейси, які говорять <span class="grad">самі за себе</span></h1>
+  <p>Кожна історія — це шлях від «не знаю, з чого почати» до перших клієнтів і стабільних результатів із ТікТоку.</p>
+</header>
+
+<main id="cases"><!-- кейси генеруються зі списку нижче --></main>
+
+<footer>Демонстраційна сторінка кейсів · оновлюйте список нижче, додаючи нові відгуки</footer>
+
+<script>
+/* ===== СПИСОК КЕЙСІВ — редагуйте тут ===== */
+const CASES = [
+  {
+    file:  "case_11.mp4",
+    name:  "Світлана",
+    tag:   "Фінансовий аналітик · допомога у фінансах",
+    pointA:"Сильна експертка у фінансах, але клієнтів із соцмереж практично не було.",
+    pointB:"Стабільно отримує чимало клієнтів саме з ТікТоку — контент почав приводити людей."
+  },
+  {
+    file:  "case_2.mov",
+    name:  "Лілія",
+    tag:   "Психолог",
+    pointA:"Взагалі не розуміла, з чого почати. Не було ні плану, ні розуміння, що і як знімати.",
+    pointB:"З'явилась чітка стратегія та впевненість — тепер веде свій ТікТок системно й без хаосу."
+  },
+  {
+    file:  "1.MP4",
+    name:  "Альона",
+    tag:   "БАДи → Кулінарія",
+    pointA:"Цілий рік знімала відео в мережевому маркетингу БАДів — результату не було, лише вигорання.",
+    pointB:"Змінили нішу на кулінарію — те, що їй справді подобається, — і зараз має дуже круті результати."
+  },
+  {
+    file:  "2.mp4",
+    name:  "Тетяна",
+    tag:   "Лайф-коуч",
+    pointA:"Не розуміла взагалі, з чого почати.",
+    pointB:"Стабільно знімає відео і просуває свої послуги через TikTok. Технічно розібралась сама: як монтувати, як виставляти відео й аналізувати їх."
+  },
+  {
+    file:  "3.MP4",
+    name:  "Ольга",
+    tag:   "Мережевий маркетинг круїзних подорожей",
+    pointA:"Взагалі не розуміла, як працює TikTok.",
+    pointB:"Тепер сама знімає відео і отримує з них потенційних клієнтів до себе в команду. Навчилася монтувати відео, перестала боятися камери і зрозуміла, як працюють алгоритми TikTok."
+  },
+  {
+    file:  "video3.mp4",
+    name:  "Анна",
+    tag:   "Психолог, ментор",
+    pointA:"Шукала себе і взагалі не вела TikTok.",
+    pointB:"Знає конкретно, як іти до результату, вже рухається в правильному напрямку і думає над запуском свого онлайн-навчання."
+  },
+  {
+    file:  "4.mp4",
+    name:  "Оксана",
+    tag:   "Викладач української мови та літератури",
+    pointA:"Шукала учнів на онлайн-уроки лише по сарафанному радіо.",
+    pointB:"За допомогою TikTok суттєво збільшила кількість учнів."
+  },
+  {
+    file:  "5.MP4",
+    name:  "Ольга",
+    tag:   "Мережевий бізнес, БАДи (MLM)",
+    pointA:"Починала з нуля: TikTok не вела, було лише кілька фотографій.",
+    pointB:"Стабільно веде TikTok, розуміє алгоритми і як усім керувати, робить монтаж відео й отримує клієнтів."
+  },
+  {
+    file:  "6.MP4",
+    name:  "Люба",
+    tag:   "Мережевий бізнес",
+    pointA:"Взагалі не знала, що знімати і як розвивати свої соцмережі.",
+    pointB:"Повним ходом отримує клієнтів із соцмереж, особливо з TikTok. Додатково підключила Instagram і Facebook."
+  },
+  {
+    file:  "7.MP4",
+    name:  "Ірина",
+    tag:   "Нумеролог",
+    pointA:"Не знала, як отримувати клієнтів.",
+    pointB:"Стабільно веде свій TikTok-акаунт, не боїться камери, сама монтує відео й уже отримує клієнтів із TikTok."
+  }
+  /* ,{ file:"...", name:"...", tag:"...", pointA:"...", pointB:"..." }  ← новий кейс */
+];
+
+/* ===== Рендер (нижче нічого змінювати не треба) ===== */
+const root = document.getElementById("cases");
+CASES.forEach((c, i) => {
+  const el = document.createElement("section");
+  el.className = "case";
+  el.innerHTML = `
+    <div class="media">
+      <div class="badge-num">${i + 1}</div>
+      <video controls preload="metadata" playsinline
+             src="${encodeURIComponent(c.file)}"></video>
+    </div>
+    <div class="info">
+      <h2>${c.name}</h2>
+      ${c.tag ? `<span class="tag">${c.tag}</span>` : ""}
+      <div class="ab">
+        <div class="row">
+          <span class="pt a">Точка А</span>
+          <span class="txt">${c.pointA}</span>
+        </div>
+        <div class="row">
+          <span class="pt b">Точка Б</span>
+          <span class="txt">${c.pointB}</span>
+        </div>
+      </div>
+    </div>`;
+  root.appendChild(el);
+
+  // авто-визначення формату відео (горизонтальне / вертикальне)
+  const v = el.querySelector("video");
+  v.addEventListener("loadedmetadata", () => {
+    if (v.videoWidth && v.videoHeight) {
+      el.classList.add(v.videoWidth >= v.videoHeight ? "landscape" : "portrait");
+      v.style.aspectRatio = v.videoWidth + " / " + v.videoHeight;
+    }
+  });
+});
+</script>
+</body>
+</html>
